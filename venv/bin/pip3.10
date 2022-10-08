@@ -1,4 +1,4 @@
-#!/home/romashka/python/telebot/venv/bin/python3
+#!/home/romashka/python/telebot/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
