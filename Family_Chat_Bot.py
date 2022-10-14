@@ -1,19 +1,37 @@
 import telebot
-from work_with_db import save_new_member
+from work_with_db import save_new_member, family_list
 from telebot import types
 
 name = ''
 surname = ''
 age = 0
 
-bot = telebot.TeleBot('5654927191:AAFjk0m0BPTfXViNkK2rHJeahRVIYIJTBqM')
+bot_commands = {
+    "/help": "list of commands",
+    "/hello": "new member introduction",
+    "/who_is_there": "list of members",
+    "/weather": "weather forcast"
+}
+
+bot = telebot.TeleBot('5333274566:AAHtr0A9EhJO9wGcBTbGbN1uzacEb33B0us')
 
 
 @bot.message_handler(content_types=['text'])
 def get_text_message(message):
     if message.text == '/hello':
-        bot.send_message(message.from_user.id, 'Hello, my friend! What is your name?')
+        bot.send_message(message.from_user.id, "Hello, my friend! I'm your FamilyBot. What is your name?")
         bot.register_next_step_handler(message, get_name)
+    elif message.text == "/who_is_there":
+        bot.send_message(message.from_user.id, "Who we are:")
+        result = family_list()
+        for row in result:
+            bot.send_message(message.from_user.id, f"{row[0]}, {row[1]}, {row[2]}")
+    elif message.text == '/help':
+        bot.send_message(message.from_user.id, 'I can:')
+        for key, value in bot_commands.items():
+            bot.send_message(message.from_user.id, f"{key}: {value}")
+    elif message.text == '/weather':
+        bot.send_message(message.from_user.id, "https://rp5.ru/")
     else:
         bot.send_message(message.from_user.id, 'Say "/hello"')
 
@@ -28,7 +46,7 @@ def get_name(message):
 def get_surname(message):
     global surname
     surname = message.text
-    bot.send_message(message.from_user.id, f'Greate {name} {surname}! How old are you?')
+    bot.send_message(message.from_user.id, f"Hi {name} {surname}! Nice to meet you. When's your birthday?")
     bot.register_next_step_handler(message, get_age)
 
 
