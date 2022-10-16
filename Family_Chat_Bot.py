@@ -19,27 +19,25 @@ bot = telebot.TeleBot('5333274566:AAHtr0A9EhJO9wGcBTbGbN1uzacEb33B0us')
 @bot.message_handler(content_types=['text'])
 def get_text_message(message):
     if message.text == '/hello':
-        bot.send_message(message.from_user.id, "Hello, my friend! I'm your FamilyBot. What is your name?")
+        bot.send_message(message.chat.id, "Hello, my friend! I'm your FamilyBot. What is your name?")
         bot.register_next_step_handler(message, get_name)
     elif message.text == "/who_is_there":
-        bot.send_message(message.from_user.id, "Who we are:")
+        bot.send_message(message.chat.id, "Who we are:")
         result = family_list()
         for row in result:
-            bot.send_message(message.from_user.id, f"{row[0]}, {row[1]}, {row[2]}")
+            bot.send_message(message.chat.id, f"{row[0]}, {row[1]}, {row[2]}")
     elif message.text == '/help':
-        bot.send_message(message.from_user.id, 'I can:')
+        bot.send_message(message.chat.id, 'I can:')
         for key, value in bot_commands.items():
-            bot.send_message(message.from_user.id, f"{key}: {value}")
+            bot.send_message(message.chat.id, f"{key}: {value}")
     elif message.text == '/weather':
-        bot.send_message(message.from_user.id, "https://rp5.ru/")
-    else:
-        bot.send_message(message.from_user.id, 'Say "/hello"')
+        bot.send_message(message.chat.id, "https://rp5.ru/")
 
 
 def get_name(message):
     global name
     name = message.text
-    bot.send_message(message.from_user.id, f'Hi {name}! What is your surname?')
+    bot.send_message(message.chat.id, f'Hi {name}! What is your surname?')
     bot.register_next_step_handler(message, get_surname)
 
 
