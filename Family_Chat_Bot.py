@@ -1,10 +1,11 @@
+from datetime import datetime
 import telebot
 from work_with_db import save_new_member, family_list
 from telebot import types
 
 name = ''
 surname = ''
-age = 0
+birthday = 0
 
 bot_commands = {
     "/help": "list of commands",
@@ -44,31 +45,32 @@ def get_name(message):
 def get_surname(message):
     global surname
     surname = message.text
-    bot.send_message(message.from_user.id, f"Hi {name} {surname}! Nice to meet you. When's your birthday?")
-    bot.register_next_step_handler(message, get_age)
+    bot.send_message(message.from_user.id, f"Hi {name} {surname}! Nice to meet you. When's your birthday (dd.mm.YYYY)?")
+    bot.register_next_step_handler(message, get_birthday)
 
 
-def get_age(message):
-    global age
-    while age == 0:
-        try:
-            age = int(message.text)
-        except Exception:
-            bot.send_message(message.from_user.id, 'Use numbers please!')
+def get_birthday(message):
+    global birthday
+    birthday = message.text
+    # while birthday == 0:
+    #     try:
+    #         birthday = int(message.text)
+    #     except Exception:
+    #         bot.send_message(message.chat.id, 'Use numbers please!')
 
     keyboard = types.InlineKeyboardMarkup()
     key_yes = types.InlineKeyboardButton(text='yes', callback_data='yes')
     keyboard.add(key_yes)
     key_no = types.InlineKeyboardButton(text='no', callback_data='no')
     keyboard.add(key_no)
-    question = f'{name} {surname}, {age}. Correct?'
-    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+    question = f'{name} {surname}, {birthday}. Correct?'
+    bot.send_message(message.chat.id, text=question, reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_worker(call):
     if call.data == 'yes':
         bot.send_message(call.message.chat.id, "I'll remember you")
-        save_new_member(name, age)
+        save_new_member(name, surname, birthday, datetime.now())
     elif call.data == 'no':
         bot.send_message(call.message.chat.id, "It's impossible! Say '/hello' again and introduce yourself!")
