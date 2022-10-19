@@ -2,6 +2,8 @@ from datetime import datetime
 import telebot
 from work_with_db import save_new_member, family_list
 from telebot import types
+from parser_w.main import get_content, get_html
+
 
 name = ''
 surname = ''
@@ -33,7 +35,10 @@ def get_text_message(message):
         for key, value in bot_commands.items():
             bot.send_message(message.chat.id, f"{key}: {value}")
     elif message.text == '/weather':
-        bot.send_message(message.chat.id, "https://rp5.ru/")
+        url = "https://rp5.ru/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5_(%D0%92%D0%94%D0%9D%D0%A5)"
+        html = get_html(url)
+        weather = get_content(html)
+        bot.send_message(message.chat.id, weather)
 
 
 def get_name(message):
